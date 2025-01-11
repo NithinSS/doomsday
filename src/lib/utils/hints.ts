@@ -61,15 +61,15 @@ export function generateHints(date: Date): Hint[] {
     const mnemonics = {
       0: { text: "3rd (4th in leap years)", date: 3 }, // Jan
       1: { text: "Last day (28/29)", date: 28 }, // Feb
-      2: { text: "Pi Day (14th)", date: 14 }, // Mar
+      2: { text: "Pi Day (14th) (3/14)", date: 14 }, // Mar
       3: { text: "4/4", date: 4 }, // Apr
-      4: { text: "9 to 5", date: 9 }, // May
+      4: { text: "9/5", date: 9 }, // May
       5: { text: "6/6", date: 6 }, // Jun
       6: { text: "7/11", date: 11 }, // Jul
       7: { text: "8/8", date: 8 }, // Aug
       8: { text: "5/9", date: 5 }, // Sep
       9: { text: "10/10", date: 10 }, // Oct
-      10: { text: "7/11", date: 7 }, // Nov
+      10: { text: "11/7", date: 7 }, // Nov
       11: { text: "12/12", date: 12 }  // Dec
     };
     return mnemonics[month];
