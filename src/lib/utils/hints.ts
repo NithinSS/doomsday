@@ -49,43 +49,39 @@ export function getYearDoomsday(year: number): { day: string; calculation: strin
   };
 }
 
-export function getMonthDoomsdays(date: Date): string {
-  const monthDoomsdays = {
-    0: [3, 10, 17, 24, 31], // Jan
-    1: [7, 14, 21, 28], // Feb
-    2: [7, 14, 21, 28], // Mar
-    3: [4, 11, 18, 25], // Apr
-    4: [2, 9, 16, 23, 30], // May
-    5: [6, 13, 20, 27], // Jun
-    6: [4, 11, 18, 25], // Jul
-    7: [1, 8, 15, 22, 29], // Aug
-    8: [5, 12, 19, 26], // Sep
-    9: [3, 10, 17, 24, 31], // Oct
-    10: [7, 14, 21, 28], // Nov
-    11: [5, 12, 19, 26] // Dec
-  };
-
-  const month = date.getMonth();
-  const monthName = date.toLocaleString('default', { month: 'long' });
-  const dates = monthDoomsdays[month];
-  const targetDate = date.getDate();
-
-  // Find closest dates
-  const closest = dates.reduce((prev, curr) => 
-    Math.abs(curr - targetDate) < Math.abs(prev - targetDate) ? curr : prev
-  );
-
-  const nearbyDates = dates
-    .filter(d => Math.abs(d - targetDate) <= 7)
-    .sort((a, b) => Math.abs(a - targetDate) - Math.abs(b - targetDate));
-
-  return `${monthName} ${nearbyDates.join(', ')} are doomsdays`;
-}
-
 export function generateHints(date: Date): Hint[] {
   const year = date.getFullYear();
   const yearDoomsday = getYearDoomsday(year);
   const correctDay = dayNames[calculateDayOfWeek(date)];
+  const month = date.getMonth();
+  const targetDate = date.getDate();
+
+  // Helper function to get mnemonic and its date
+  function getMonthMnemonic(month: number): { text: string; date: number } {
+    const mnemonics = {
+      0: { text: "3rd (4th in leap years)", date: 3 }, // Jan
+      1: { text: "Last day (28/29)", date: 28 }, // Feb
+      2: { text: "Pi Day (14th)", date: 14 }, // Mar
+      3: { text: "4/4", date: 4 }, // Apr
+      4: { text: "9 to 5", date: 9 }, // May
+      5: { text: "6/6", date: 6 }, // Jun
+      6: { text: "7/11", date: 11 }, // Jul
+      7: { text: "8/8", date: 8 }, // Aug
+      8: { text: "5/9", date: 5 }, // Sep
+      9: { text: "10/10", date: 10 }, // Oct
+      10: { text: "7/11", date: 7 }, // Nov
+      11: { text: "12/12", date: 12 }  // Dec
+    };
+    return mnemonics[month];
+  }
+
+  const monthInfo = getMonthMnemonic(month);
+  const difference = targetDate - monthInfo.date;
+  const daysCalc = `
+1. Doomsday for ${date.toLocaleString('default', { month: 'long' })}: ${monthInfo.date}th
+2. Target date: ${targetDate}th
+3. Difference: ${Math.abs(difference)} day${Math.abs(difference) === 1 ? '' : 's'} ${difference > 0 ? 'after' : 'before'}
+4. So count (${Math.abs(difference)} % 7) ${difference > 0 ? 'forward' : 'backward'}: ${yearDoomsday.day} ${difference > 0 ? '+' : '-'} ${Math.abs(difference) % 7}`;
 
   return [
     {
@@ -103,14 +99,15 @@ export function generateHints(date: Date): Hint[] {
     },
     {
       id: 3,
-      icon: '📆',
-      text: getMonthDoomsdays(date),
+      icon: '💡',
+      text: `Doomsday for ${date.toLocaleString('default', { month: 'long' })}: ${monthInfo.text}`,
       unlocked: false
     },
     {
       id: 4,
       icon: '✨',
       text: `It's a ${correctDay}`,
+      extraInfo: daysCalc,
       unlocked: false
     }
   ];

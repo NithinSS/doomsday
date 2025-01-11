@@ -8,12 +8,19 @@
 
   let hintTimer: number;
   let currentHintIndex = 0;
-  let showExtra = false;
+  let showCalculation = {
+    2: false,  // for year calculation
+    4: false   // for date calculation
+  };
+
+  function toggleCalculation(hintId: number) {
+    showCalculation[hintId] = !showCalculation[hintId];
+  }
 
   $: if (resetHints) {
     currentHintIndex = 0;
     hints.forEach(hint => hint.unlocked = false);
-    showExtra = false;
+    showCalculation = { 2: false, 4: false };
     startHintTimer();
   }
 
@@ -51,10 +58,6 @@
       unlockNextHint();
     }
   }
-
-  function toggleExtra() {
-    showExtra = !showExtra;
-  }
 </script>
 
 <div class="hints-container">
@@ -70,14 +73,14 @@
       {#if hint.unlocked}
         <div class="hint-content">
           <p>{hint.text}</p>
-          {#if hint.extraInfo && hint.id === 2}
+          {#if hint.extraInfo && (hint.id === 2 || hint.id === 4)}
             <button 
               class="show-more" 
-              on:click={toggleExtra}
+              on:click={() => toggleCalculation(hint.id)}
             >
-              {showExtra ? 'Hide calculation' : 'Show calculation'}
+              {showCalculation[hint.id] ? 'Hide calculation' : 'Show calculation'}
             </button>
-            {#if showExtra}
+            {#if showCalculation[hint.id]}
               <pre class="calculation">{hint.extraInfo}</pre>
             {/if}
           {/if}
