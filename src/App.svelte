@@ -2,8 +2,10 @@
   import { onMount } from 'svelte';
   import { generateRandomDate, calculateDayOfWeek, formatDate, dayNames } from './lib/utils/doomsday';
   import { saveGameConfig, loadGameConfig } from './lib/utils/storage';
+  import { generateHints } from './lib/utils/hints';
   import InfoModal from './lib/components/InfoModal.svelte';
   import ResultsScreen from './lib/components/ResultsScreen.svelte';
+  import HintSystem from './lib/components/HintSystem.svelte';
 
   let currentDate: Date;
   let score = 0;
@@ -16,6 +18,8 @@
   let showInfo = false;
   let wasPaused = false;
   let pausedTime = 0;
+  let hints = [];
+  let resetHints = false;
 
   // Configuration
   let duration = 120;
@@ -61,6 +65,12 @@
 
   function generateNewDate() {
     currentDate = generateRandomDate(startYear, endYear);
+    hints = generateHints(currentDate);
+    resetHints = true;
+    // Reset flag after a tick to trigger reactivity
+    setTimeout(() => {
+      resetHints = false;
+    }, 0);
   }
 
   function checkAnswer(dayIndex: number) {
@@ -126,6 +136,10 @@
 
   function validateDuration() {
     duration = Math.max(30, Math.min(600, duration));
+  }
+
+  function handleHintUnlock() {
+    // Optional: Add any logic needed when a hint is unlocked
   }
 </script>
 
@@ -203,6 +217,11 @@
         <div class="card date-display">
           <h2>{formatDate(currentDate)}</h2>
           <div class="feedback {feedbackClass}">{feedback}</div>
+          <HintSystem 
+            {hints}
+            {resetHints}
+            onHintUnlock={handleHintUnlock}
+          />
         </div>
 
         <div class="days-grid">
