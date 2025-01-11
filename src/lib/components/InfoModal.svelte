@@ -13,15 +13,32 @@
   <div class="modal-backdrop" on:click={handleBackdropClick}>
     <div class="modal card">
       <button class="close-btn" on:click={onClose}>&times;</button>
+      <h2>Game instructions: </h2>
+      <div class="content">
+  
+        <ol>
+          <li>You'll be shown random dates within your selected year range.</li>
+          <li>Your task is to determine which day of the week that date falls on using Doomsday algorithm.</li>
+          <li>Click the corresponding day button or use number keys 1-7 to select your answer.</li>
+          <li>Score points by getting correct answers before time runs out.</li>
+          <li>Use hints (use 'h' on keyboard or wait 10 seconds for next hint) if you get stuck.</li>
+        </ol>
+      </div>
       <h2>Doomsday Algorithm</h2>
       <div class="content">
-        <p>The Doomsday Algorithm is a method to calculate the day of the week for any given date.</p>
-        
-        <h3>Key Concepts:</h3>
-        <ol>
-          <li>Each century has an anchor day (Doomsday)</li>
-          <li>Certain dates in each month fall on the same day of the week (Doomsdays)</li>
-        </ol>
+        <div class="video-container">
+          <iframe
+            width="100%"
+            height="315"
+            src="https://www.youtube.com/embed/T_nQG-Bzxsg"
+            title="YouTube video player"
+            frameborder="0"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            allowfullscreen
+          ></iframe>
+        </div>
+        <p>The Doomsday Algorithm is a mental calculation trick to determine the day of the week for any given date in history or the future. It was invented by mathematician John Horton Conway.</p>
+        <p>At its core, the algorithm relies on "Doomsdays," which are specific dates in each year that always fall on the same weekday. Last day of February is the Doomsday of the year. Once you know the weekday for the Doomsday of a given year, you can quickly calculate the weekday for any other date in that year in comparison with closest doomsday weekdays.</p>
 
         <h3>Century Anchors:</h3>
         <ul>
@@ -29,6 +46,15 @@
           <li>1800s → Friday</li>
           <li>1900s → Wednesday</li>
           <li>2000s → Tuesday</li>
+        </ul>
+
+        <h3>Year based offsets:</h3>
+        <p>For the given year within the century, calculate the number of years since the start of the century, plus the number of leap years up to that point. Use this offset to find the year’s Doomsday.</p>
+        <ul>
+          <li>2025 is 25 years since 2000 → 25.</li>
+          <li>Leap years up to 2025 → 6 (25 ÷ 4)</li>
+          <li>Offset = (25 + 6) % 7 = 31 % 7 = 3.</li>
+          <li>Doomsday for 2025 = Tuesday(2000) + 3(offset) = Friday (or Day of Feb 28 2025 is Friday).</li>
         </ul>
 
         <h3>Monthly Doomsdays:</h3>
@@ -40,13 +66,16 @@
         </ul>
 
         <h3>Example:</h3>
-        <p>For March 15, 2024:</p>
+        <p>For July 4, 2024:</p>
         <ol>
           <li>2000s anchor: Tuesday</li>
-          <li>24 ÷ 4 = 6 steps forward</li>
-          <li>March 14 is a Doomsday</li>
-          <li>15th is one day after → Friday</li>
+          <li>Year calculation: 24 years + 6 leap years = 30 steps forward from Tuesday = Thursday</li>
+          <li>July 11 is a Doomsday (7/11), so it falls on Thursday</li>
+          <li>Count backwards: 11th is Thursday, (11-7) is also a Thursday, 4th is Thursday</li>
+          <li>Therefore July 4, 2024 falls on a Thursday</li>
         </ol>
+
+        <p><em>Fun fact: Conway was so fast at this algorithm that he could perform the calculation in just 2 seconds! He even added it as a captcha to his PC login screen for daily practice.</em></p>
       </div>
     </div>
   </div>
@@ -100,5 +129,20 @@
 
   li {
     margin: 0.5rem 0;
+  }
+
+  .video-container {
+    position: relative;
+    padding-bottom: 56.25%; /* 16:9 aspect ratio */
+    height: 0;
+    margin-bottom: 1.5rem;
+  }
+
+  .video-container iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
   }
 </style>

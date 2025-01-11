@@ -20,6 +20,7 @@
   let pausedTime = 0;
   let hints = [];
   let resetHints = false;
+  let activeButton: number | null = null;
 
   // Configuration
   let duration = 120;
@@ -47,7 +48,11 @@
     
     const key = parseInt(event.key);
     if (key >= 1 && key <= 7) {
+      activeButton = key - 1;
       checkAnswer(key - 1);
+      setTimeout(() => {
+        activeButton = null;
+      }, 200);
     }
   }
 
@@ -227,8 +232,14 @@
         <div class="days-grid">
           {#each dayNames as day, i}
             <button 
-              class="btn day-btn" 
-              on:click={() => checkAnswer(i)}
+              class="btn day-btn {activeButton === i ? 'active' : ''}" 
+              on:click={() => {
+                activeButton = i;
+                checkAnswer(i);
+                setTimeout(() => {
+                  activeButton = null;
+                }, 200);
+              }}
             >
               <span class="day-name">{day.slice(0, 3)}</span>
               <span class="key-number">{i + 1}</span>
@@ -303,9 +314,13 @@
   .days-grid {
     display: grid;
     grid-template-columns: repeat(7, 1fr);
-    gap: 0.5rem;
-    margin-top: 2rem;
+    gap: 1rem;  /* reduced from 0.5rem */
+    margin-top: 3.5rem;  /* reduced from 2rem */
+    max-width: 500px;  /* added to control maximum width */
+    margin-left: auto;
+    margin-right: auto;
   }
+
 
   .day-btn {
     position: relative;
@@ -380,5 +395,11 @@
   h2 {
     font-size: 2em;
     margin: 0;
+  }
+
+  .day-btn.active {
+    transform: scale(0.95);
+    background: var(--accent);
+    transition: all 0.1s ease;
   }
 </style>
