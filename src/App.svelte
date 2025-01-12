@@ -207,9 +207,14 @@
       <ResultsScreen 
         {score} 
         duration={duration} 
-        onRestart={() => {
-          showResults = false;
-          gameStarted = false;
+        onRestart={(resetConfig) => {
+          if (resetConfig) {
+            showResults = false;
+            gameStarted = false;
+          } else {
+            showResults = false;
+            startGame();
+          }
         }}
       />
     {:else}

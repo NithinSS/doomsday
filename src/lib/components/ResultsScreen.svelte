@@ -1,7 +1,7 @@
 <script lang="ts">
   export let score: number;
   export let duration: number;
-  export let onRestart: () => void;
+  export let onRestart: (resetConfig: boolean) => void;
 
   $: calculationsPerMinute = Math.round((score / duration) * 60);
 </script>
@@ -22,9 +22,14 @@
       </div>
     </div>
 
-    <button class="btn" on:click={onRestart}>
-      Play Again
-    </button>
+    <div class="button-group">
+      <button class="btn" on:click={() => onRestart(false)}>
+        Play Again
+      </button>
+      <button class="btn btn-secondary" on:click={() => onRestart(true)}>
+        Reset
+      </button>
+    </div>
   </div>
 </div>
 
@@ -61,5 +66,15 @@
     font-size: 2em;
     font-weight: bold;
     color: var(--primary);
+  }
+
+  .button-group {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+  }
+
+  .btn-secondary {
+    background-color: var(--text);
   }
 </style>
